@@ -32,6 +32,7 @@ public class SeotdaController {
 		model.addAttribute("first", first);
 		model.addAttribute("second", second);
 		model.addAttribute("result", result);
-		return "toyprj/house";
+		
+		return "toyprj/JShouse";
 	}
 }
