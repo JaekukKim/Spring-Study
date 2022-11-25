@@ -5,6 +5,16 @@
 <head>
 	<meta charset="UTF-8">
 	<title>비닐하우스</title>
+	
+	<style>
+	.col, .col2{
+		background-color: green;
+	}
+	#first, #second {
+		text-align : center;
+	}
+	</style>
+	
 	<script>
 		function first(){
 			var first = document.getElementById("first");
@@ -31,14 +41,14 @@
 </head>
 <body>
 	<table border = "1">
-		<th bgcolor="yellow">1번째 패</th>
-		<th bgcolor="yellow">2번째 패</th>
+		<th class="col">1번째 패</th>
+		<th class="col2">2번째 패</th>
 			<tr>
 				<td>
-					<button type = "button" onclick="first()" id="first">1번째 패 확인</button>
+					<div id = "first">${first }</div>
 				</td>
 				<td>
-					<button type = "button" onclick="second()" id="second">2번째 패 확인</button>
+					<div id = "second">${second }</div>
 				</td>
 			</tr>
 	</table>
