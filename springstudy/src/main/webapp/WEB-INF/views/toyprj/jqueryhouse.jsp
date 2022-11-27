@@ -32,56 +32,42 @@ thead {
 		<tbody>
 			<tr>
 				<td>
-					<button id = "first" onclick="firstSet()">1번째패</button>
+					<div id="first"></div>
 				</td>
 				<td>
-					<button id = "second" onclick="secondSet()">2번째패</button>
+					<div id="second"></div>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 	<div>
-		<button id="result" type="button" onclick="resultSet()">결과확인</button>
+		<div id="result">결과확인</div>
 	</div>
 </body>
 <script>
-
-		function firstSet(){
-			//var first = document.getElementById("first");
+		/* document.ready()를 써야하는건 따옴, 이제 어떻게 이쁘게 작성할까... */
+		/* 그 전 jshouse.jsp 에서 썼던 코드들 jquery + 리팩토링 */
+		/* 스크립트 영역에서 전역변수를 따로 선언하고 <link src = "js파일경로명"/> 식으로 js파일을 임포트했을때 변수 명이 같은게 있는지
+			반드시 확인해주어야한다. 이 부분은 정말정말 중요하다. 프론트영역이긴함.*/
 			
-			/* var fir = $("#first");
-			fir.html(${first}); */
-			$("#first").html(${first});
-		}
-		
-		function secondSet(){
-			//var second = document.getElementById("second");
+		$(document).ready(function() {
+			var firstHanded = ${first};
+			var secondHanded = ${second};
+			var totalHanded = (firstHanded+secondHanded) % 10;
 			
-			/* var sec = $("#second");
-			sec.html(${second}); */
-			$("#second").html(${second});
-		}
-		
-		function resultSet(){
-			var resultNum = (${first } + ${second }) % 10;
+			$("#first").html(firstHanded);
+			$("#second").html(secondHanded);
 			
-			//var result = document.getElementById("result");
-			var res = $("#result");
-			res.html(${result});
-			
-			
-			if(${first } == ${second }){
-				// result.innerHTML = ${first } + ' 땡입니다!!';
-				res.html(${first } + ' 땡입니다!!');
+			if(firstHanded == secondHanded){
+				$("#result").html(firstHanded + ' 땡입니다!!');
 				
-			} else {
-				res.html(resultNum + " 끗입니다.");
+			} else if (firstHanded != secondHanded){
+				$("#result").html(totalHanded + " 끗입니다.");
 				
+			} else if (totalHanded==0) {
+				$("#result").html("망통이네요..");	
 			}
-			if(resultNum==0){
-				res.html("망통이네요...");
-				
-			}
-		}
+		});
+		
 </script>
 </html>
