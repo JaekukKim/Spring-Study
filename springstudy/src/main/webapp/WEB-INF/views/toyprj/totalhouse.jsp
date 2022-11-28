@@ -25,7 +25,7 @@ thead {
 		String secondHanded = (String)request.getAttribute("second");
 		String totalHanded = (String)request.getAttribute("result");
 	%>
-	
+
 	<table border="1">
 		<thead>
 			<!-- 테이블 태그는 table-thead-tr-th-tbody-tr-td 순으로 작성해준다 조금 까다롭다. -->

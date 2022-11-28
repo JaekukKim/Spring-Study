@@ -6,10 +6,13 @@ public class Card {
 	private int num;
 	
 	
-	public Card(String deckNum, String cardNum, int num) {
-		this.deckNum=deckNum;
+	public Card(String cardNum, String deckNum, int num) {
 		this.cardNum=cardNum;
+		this.deckNum=deckNum;
 		this.num=num;
+	}
+	public Card() {
+		// TODO Auto-generated constructor stub
 	}
 	public String getDeckNum() {
 		return deckNum;

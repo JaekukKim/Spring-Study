@@ -37,7 +37,7 @@ public class CardDeck {
 	
 					light = Integer.toString(i);
 				}
-				Card card = new Card(deck,light,cardnum);
+				Card card = new Card(light,deck,cardnum);
 				cards.add(card);
 			}
 		}
