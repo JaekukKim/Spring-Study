@@ -33,11 +33,11 @@ thead {
 			<tbody>
 				<tr>
 					<td>
-						<button id="first" onclick="reStart()">ajax 버튼</button>
-						<div>${first }</div>
+						<button id="first" onclick="firstCard()">1번 패 공개</button>
+						<div id = "add">이곳에 공개됩니다.</div>
 					</td>
 					<td>
-						<div id="second"></div>
+						<button id="second" onclick="secondCard()">2번 패 공개</button>
 					</td>
 				</tr>
 			</tbody>
@@ -45,10 +45,50 @@ thead {
 		<div>
 			<div id="result"></div>
 		</div>
-		<button id="redraw" onclick="reDraw()">재시작</button>
 		
 </body>
 <script type="text/javascript">
+
+	// 1. 아래 변수 선언 위치도 제대로 모르고 선언함 ajax 코드 안에는 변수선언 하면 안됨.
+	// 2. ajax안에 error를 지 맘대로씀
+	// 3. 스크립트 에러나는데 개발자도구 1도안쳐다봄 (f12의 습관화)
+	// 4. success에서 가져온 data console.log로 찍으면 되는데 시도 조차 안함.
+	// (f12에서 브레이크포인트 사용이 가능하다 꼭 쓸것, 브레이크 포인트 쓰기 전 console.log() 겁나게 찍자 콘솔로그엔 답이있다..!)
+	
+	// 컨트롤러에서 넘어온 변수를 저장할 값
+	// 자바스크립트 배열 선언방식.
+	var card = 0;
+	function firstCard(){
+		$.ajax({
+			// ajax안에 있는 코드들은 맵이다
+			// type (키) : 값;
+			type : 'POST',
+			url : "/ajaxjspdobak",
+			data : {"add" : card},
+			datatype : "JSON",
+			success : function (obj){
+				
+				var list = [];
+				
+				if (obj.connect == "success") {
+					for (var i = 0; i < Object.keys(obj).length; i++) {
+						// console.log(cardList);
+						list.push(obj.cardList[i].cardNum);
+						// console.log(cardList);
+					}
+				}
+				console.log(list);
+				console.log(obj);
+				console.log(typeof obj);
+				console.log(Object.keys(obj).length);
+				document.getElementById("add").innerHTML = obj;
+				
+			},
+			error : function(request, status, error) { // 결과 에러 콜백함수
+		        console.log(error)
+		    }
+		});
+	}
 	/* ajax 코드 작성 */
 
 	/* 
@@ -57,26 +97,5 @@ thead {
 		클라이언트 -> 서버 -> ajax -> jsp -> 서버 -> 순환...후 클라이언트 이런식으로 돌아간다. 즉 ajax는 비동기식 통신 방식이다.
 	 */
 
-	/* redraw버튼 클릭시 진행. */
-	$("#redraw").click(function(){
-		var values = []; /* 리스트 값 받을 변수 */
-		
-		$.post("/ajaxjspdobak",
-				function(cardList){
-			if(cardList.connect=="success"){
-				values = cardList.playerCardList;
-				
-				$.each(values, function(index, value){
-					console.log(index + " : " + value.cardNum);
-				});
-				
-				alert('성공');
-			} else {
-				alert('실패');
-			}
-		});
-	}
-	
-	}
 </script> 
 </html>

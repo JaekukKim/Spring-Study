@@ -16,7 +16,7 @@ public class AjaxSeotdaController {
 
 	@ResponseBody
 	@RequestMapping(value = "/ajaxjspdobak", method = RequestMethod.POST)
-	public Object getDeck(@RequestParam Map<String,Object> map) {
+	public Map<String, Object> getDeck(@RequestParam Map<String,Object> map) {
 
 		// 1번째 플레이어의 카드를 담을 리스트 생성
 		List<Card> playerCardList = new ArrayList<>();
@@ -54,7 +54,7 @@ public class AjaxSeotdaController {
 
 		// 이러면 플레이어 카드 리스트의 총 길이는 2이며 인덱스는 0과 1 존재
 		// 0 = firstHanded // 1 = secondHanded
-
+		//int a = 1;
 		return cardList;
 	}
 	
