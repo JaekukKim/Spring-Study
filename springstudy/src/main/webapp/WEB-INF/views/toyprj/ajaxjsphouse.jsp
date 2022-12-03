@@ -26,24 +26,23 @@ thead {
 			<thead>
 				<!-- 테이블 태그는 table-thead-tr-th-tbody-tr-td 순으로 작성해준다 조금 까다롭다. -->
 				<tr>
-					<th>1번째 패</th>
-					<th>2번째 패</th>
+					<th>1번 플레이어</th>
+					<th>2번 플레이어</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>
-						<button id="first" onclick="firstCard()">1번 패 공개</button>
-						<div id = "add">이곳에 공개됩니다.</div>
+						<div id="first">1번 플레이어의 카드</div>
 					</td>
 					<td>
-						<button id="second" onclick="secondCard()">2번 패 공개</button>
+						<div id="second">2번 플레이어의 카드</div>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<div>
-			<div id="result"></div>
+			<button id="open" onclick="openCard()"> 카드오픈 </button>
 		</div>
 		
 </body>
@@ -57,31 +56,50 @@ thead {
 	
 	// 컨트롤러에서 넘어온 변수를 저장할 값
 	// 자바스크립트 배열 선언방식.
-	var card = 0;
-	function firstCard(){
+	var param;
+	function openCard(){
 		$.ajax({
 			// ajax안에 있는 코드들은 맵이다
 			// type (키) : 값;
 			type : 'POST',
 			url : "/ajaxjspdobak",
-			data : {"add" : card},
+			data : {"anoCardList" : param},
 			datatype : "JSON",
-			success : function (obj){
+			success : function (obj){ // <= success 부분의 obj 저 부분이 컨트롤러(서버)의 return값이 들어가는 부분이다.
 				
 				var list = [];
+				var list2 = [];
 				
 				if (obj.connect == "success") {
-					for (var i = 0; i < Object.keys(obj).length; i++) {
-						// console.log(cardList);
-						list.push(obj.cardList[i].cardNum);
-						// console.log(cardList);
+					for (var i = 0; i < obj.cardList.length; i++) {
+									// 객체의 길이를 구하는 방법은 따로있다.
+									// Object.keys(객체의 변수명).length이다.
+						
+						list.push((i+1) +  "번째 패 : " + obj.cardList[i].cardNum + "<br/>");
+						// 배열에 값을 넣어줄때는 배열명.push(넣을 값); 으로 선언한다.
 					}
+					
 				}
+				if (obj.connect2 == "success2"){
+						for (var i = 0; i < obj.cardList2.length; i++) {
+							 /* 위 조건문의 객체의 길이는 객체 전체의 길이다. 나는 카드를 4장을 넣었고 그러므로 객체의 길이는 총 4가 되어버린다.
+							 cardlist의 길이를 따로 뽑을순 없을까? 하면서 데브툴즈로 만지작 거리다 obj.cardList.length의 방식으로 선언이
+							 가능함을 알았다. ****원래의 오브젝트 배열 길이 뽑는법 : Object.keys(obj).length 이런식.**** */
+							list2.push((i+1) +  "번째 패 : " + obj.cardList2[i].cardNum + "<br/>");
+						}
+				}
+				// 엄청난 console.log의 흔적이다. console.log를 생활화 하자. 꼭 
 				console.log(list);
-				console.log(obj);
-				console.log(typeof obj);
+				console.log(list2);
+				// console.log(obj);
+				// console.log(typeof obj);
 				console.log(Object.keys(obj).length);
-				document.getElementById("add").innerHTML = obj;
+				
+				$("#first").html(list);
+				$("#second").html(list2);
+
+				/*  var firstResult = document.getElementById("first");
+				firstResult.innerHTML = list; */ 
 				
 			},
 			error : function(request, status, error) { // 결과 에러 콜백함수
