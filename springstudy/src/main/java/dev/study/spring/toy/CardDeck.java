@@ -22,12 +22,15 @@ public class CardDeck {
 					switch(i) {
 					case 1:
 						light = "1광";
+						cardnum = 11;
 						break;
 					case 3:
 						light = "3광";
+						cardnum = 13;
 						break;
 					case 8:
 						light = "8광";
+						cardnum = 18;
 						break;
 						default:
 							light = Integer.toString(i);
@@ -65,5 +68,6 @@ public class CardDeck {
 	public static void main(String[] args) {
 		CardDeck carddeck = new CardDeck();
 		System.out.println(carddeck.toString());
+		System.out.println(carddeck.getCards().get(7).getNum());
 	}
 }

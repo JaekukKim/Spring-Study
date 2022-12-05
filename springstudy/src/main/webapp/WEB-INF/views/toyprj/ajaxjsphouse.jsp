@@ -43,6 +43,7 @@ thead {
 		</table>
 		<div>
 			<button id="open" onclick="openCard()"> 카드오픈 </button>
+			<div id = "result">결과는 ?</div>
 		</div>
 		
 </body>
@@ -57,7 +58,9 @@ thead {
 	// 컨트롤러에서 넘어온 변수를 저장할 값
 	// 자바스크립트 배열 선언방식.
 	var param;
+	var result;
 	function openCard(){
+		
 		$.ajax({
 			// ajax안에 있는 코드들은 맵이다
 			// type (키) : 값;
@@ -76,6 +79,7 @@ thead {
 									// Object.keys(객체의 변수명).length이다.
 						
 						list.push((i+1) +  "번째 패 : " + obj.cardList[i].cardNum + "<br/>");
+						console.log(obj.cardList[i].num);
 						// 배열에 값을 넣어줄때는 배열명.push(넣을 값); 으로 선언한다.
 					}
 					
@@ -86,17 +90,20 @@ thead {
 							 cardlist의 길이를 따로 뽑을순 없을까? 하면서 데브툴즈로 만지작 거리다 obj.cardList.length의 방식으로 선언이
 							 가능함을 알았다. ****원래의 오브젝트 배열 길이 뽑는법 : Object.keys(obj).length 이런식.**** */
 							list2.push((i+1) +  "번째 패 : " + obj.cardList2[i].cardNum + "<br/>");
+							console.log(obj.cardList2[i].num);
 						}
 				}
 				// 엄청난 console.log의 흔적이다. console.log를 생활화 하자. 꼭 
-				console.log(list);
-				console.log(list2);
+				// console.log(list);
+				// console.log(list2);
 				// console.log(obj);
 				// console.log(typeof obj);
-				console.log(Object.keys(obj).length);
+				// console.log(Object.keys(obj).length);
+				
 				
 				$("#first").html(list);
 				$("#second").html(list2);
+				$("#result").html(obj.result);
 
 				/*  var firstResult = document.getElementById("first");
 				firstResult.innerHTML = list; */ 
