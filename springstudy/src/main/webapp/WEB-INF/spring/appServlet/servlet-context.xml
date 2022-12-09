@@ -30,6 +30,8 @@
 		base-package="dev.study.spring" />
 	<context:component-scan
 		base-package="dev.study.spring.toy" />
+	<context:component-scan
+		base-package="dev.study.spring.toy.ajax" />
 
 
 </beans:beans>

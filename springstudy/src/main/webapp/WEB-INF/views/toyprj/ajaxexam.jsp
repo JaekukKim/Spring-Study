@@ -20,7 +20,11 @@ function getCard(){
 		url : "/cardgame", /* [2] 카드를 뿌려주는 url이 담겨있는 @requestmapping value??? 값??? 그걸 여기다 넣어야함. */
 		type : "POST",
 		/* [1]위에 있는 url type data는 서버에 직접적으로 갔다오는 부분이다. */
-		
+		data : {
+			name : "이름",
+			age : "20",
+			gender : "man"
+		},
 		/* [2]그리고 위에 있는부분들이 서버에 갔다오는게 "성공" 한다면 => success // "실패" 한다면 => error */
 		success : function (data) {
 			//[] = 배열

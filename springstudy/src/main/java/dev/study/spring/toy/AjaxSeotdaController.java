@@ -14,11 +14,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class AjaxSeotdaController {
-
+	
+	@RequestMapping(value = "/firstajax", method = RequestMethod.GET)
+	public String connectAjax() {
+		// 여기 있는 메소드로 맵핑된 url로 jsp 최초진입이 시작된다, 그러므로 GET방식으로 선언해 주어야 한다.
+		// 최초진입은 url주소를 브라우저에 "직접 기입하여" 접속한다. url에 표시되서 전달되는건 뭐다? 대깨get이란거다.
+		return "toyprj/ajaxjsphouse";
+	}
+	
 	@ResponseBody
 	@RequestMapping(value = "/ajaxjspdobak", method = RequestMethod.POST)
-	public Map<String, Object> getDeck(@RequestParam Map<String, Object> param) {
-
+	public Map<String, Object> getDeck(@RequestParam Map<String, Object> param,
+				@RequestParam("first") String firLi, @RequestParam("second") String secLi, Model model) {
+		
 		// 1번째 플레이어의 카드를 담을 리스트 생성
 		List<Card> firstCardList = new ArrayList<>();
 		// 2번째 플레이어의 카드를 담을 리스트 생성
@@ -53,6 +61,7 @@ public class AjaxSeotdaController {
 		// 1번 플레이어의 1번째카드, 2번째카드 얻는 변수.
 		String firstHanded = cd.getCards().get(0).getCardNum();
 		String secondHanded = cd.getCards().get(2).getCardNum();
+		
 		// 승부 판별용 점수만 따로 계산
 		int firstHandedNum = cd.getCards().get(0).getNum();
 		int secondHandedNum = cd.getCards().get(2).getNum();
@@ -210,6 +219,7 @@ public class AjaxSeotdaController {
 		} else if (firstPlayerTotalScore%10 < secondPlayerTotalScore%10) {
 			result = "2번 플레이어가 " + secondPlayerTotalScore%10 + " 끗으로 이겼습니다!";
 		}
+		
 		// 승부 판별 종료.
 		// [1] 레벨 변수 하나 만들어서 관리하길 너무잘함.
 		// 단순 숫자만 놓고 보는 블랙잭과는 달리 섯다는 족보란게 존재하여 단순 숫자가 낮아도 상대방을 이길 수 있는 패가 매우 많음.
@@ -243,15 +253,21 @@ public class AjaxSeotdaController {
 		cardList.put("result", result);
 		cardList.put("connect", "success");
 		cardList.put("connect2", "success2");
+		model.addAttribute("cardList", firstCardList);
 		
 		//ajax에서 들어오는 값을 알기 위한 테스트코드
+//		String list = req.getParameter("list");
+//		System.out.println("list : " + list);
+		System.out.println("first : " + firLi + "\t");
+//		System.out.println(req.("list"));
+		
+//		String list2 = req.getParameter("list2");
+//		System.out.println("list2 : " + list2);
+		System.out.println("second : " + secLi + "\t");
+//		System.out.println(req.getParameter("list2"));
+//		System.out.println(rsp.getParameterMap());
 		
 		return cardList;
-	}
-
-	@RequestMapping(value = "/firstajax", method = RequestMethod.GET)
-	public String connectAjax() {
-		return "toyprj/ajaxjsphouse";
 	}
 
 }
