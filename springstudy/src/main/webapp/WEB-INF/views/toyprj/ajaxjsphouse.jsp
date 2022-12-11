@@ -34,7 +34,7 @@ thead {
 			<tr>
 				<td>
 					<div id="first">1번째 패 : ${firstCard}<br>
-					2번째 패 : ${secondCard}</div>
+									2번째 패 : ${secondCard}</div>
 				</td>
 				<td>
 					<div id="second">딜러의 패는 승부판정과 동시에 오픈됩니다.</div>
@@ -75,13 +75,14 @@ thead {
 			url : "/ajaxjspdobak",
 			data : {
 				// 여기서 데이터를 넘겨야함.
-				'first' : JSON.stringify(cardData1),
-				'second' : JSON.stringify(cardData2),
+				'first' : cardData1, /* JSON.stringify(cardData1)써서 문자열이 더블 쿼테이션으로 넘어감. 현재 저 데이터만 해도 문자열임.*/
+				'second' : cardData2,
 			},
 			datatype : 'JSON',
 			success : function(data) { // <= success 부분의 obj 저 부분이 컨트롤러(서버)의 return값이 들어가는 부분이다.
-
-				 if (data.connect == "success") {
+			
+				// 아래 코드도 굳이 필요하지 않은 부분이다.
+				 //if (data.connect == "success") {
 					 // 아랫부분은 굳이 필요가 없었던 for문이였음. 플레이어의 카드는 첫 출력 후 변하지 않음. => 주석처리.
 					 
 					/* for (var i = 0; i < data.cardList.length; i++) {
@@ -94,6 +95,7 @@ thead {
 						// 배열에 값을 넣어줄때는 배열명.push(넣을 값); 으로 선언한다.
 					}  */
 					
+					// 여기 아래있는 for문만 필요하다.
 					for (var i = 0; i < data.cardList2.length; i++) {
 						/* 위 조건문의 객체의 길이는 객체 전체의 길이다. 나는 카드를 4장을 넣었고 그러므로 객체의 길이는 총 4가 되어버린다.
 						cardlist의 길이를 따로 뽑을순 없을까? 하면서 데브툴즈로 만지작 거리다 obj.cardList.length의 방식으로 선언이
@@ -103,7 +105,7 @@ thead {
 						console.log(data.cardList2[i].cardNum);
 					}
 
-				}
+				//}
 				
 				// 엄청난 console.log의 흔적이다. console.log를 생활화 하자. 꼭 
 				// console.log(list);
