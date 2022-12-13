@@ -1,4 +1,4 @@
-package dev.study.spring.toy;
+package dev.study.spring.studywhilemakingofseotda;
 
 import javax.servlet.http.HttpServletRequest;
 

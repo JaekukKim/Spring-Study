@@ -1,4 +1,4 @@
-package dev.study.spring.toy;
+package dev.study.spring.ajax;
 
 public class CardVO {
 	private int number;

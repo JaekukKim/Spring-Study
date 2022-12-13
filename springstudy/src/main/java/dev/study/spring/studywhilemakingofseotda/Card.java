@@ -1,4 +1,4 @@
-package dev.study.spring.toy;
+package dev.study.spring.studywhilemakingofseotda;
 
 public class Card {
 	private String deckNum;

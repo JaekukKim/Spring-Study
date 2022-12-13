@@ -1,4 +1,4 @@
-package dev.study.spring.toy;
+package dev.study.spring.studywhilemakingofseotda;
 
 import java.util.ArrayList;
 import java.util.Collections;

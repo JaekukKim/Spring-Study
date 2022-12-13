@@ -73,13 +73,17 @@ thead {
 			// type (키) : 값;
 			type : 'POST',
 			url : "/securitydobak",
+			
+			// 자바 파일에서 session객체를 생성하여 "서버에 직접적으로 저장" 해 주었기 때문에 데이터와 데이터 타입은 없어도
+			// 값을 가져오기가 가능하다. 왜냐? 서버에 직접적으로 저장이 되어있기 때문에 바로 꺼내와 쓰면 되기 때문.
 			 /* JSON.stringify(cardData1)써서 문자열이 더블 쿼테이션으로 넘어감. 현재 저 데이터만 해도 문자열임.*/
 			/* data : {
 				// 여기서 데이터를 넘겨야함.
 				'first' : cardData1,
 				'second' : cardData2,
-			}, */
-			/* datatype : 'JSON', */
+			},
+			 datatype : 'JSON', */
+			
 			success : function(data) { // <= success 부분의 obj 저 부분이 컨트롤러(서버)의 return값이 들어가는 부분이다.
 			
 				// 아래 코드도 굳이 필요하지 않은 부분이다.

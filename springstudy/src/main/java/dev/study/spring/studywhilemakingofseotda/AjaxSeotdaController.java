@@ -1,12 +1,9 @@
-package dev.study.spring.toy;
+package dev.study.spring.studywhilemakingofseotda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,48 +13,63 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class SecurityAjaxSeotdaController {
+public class AjaxSeotdaController {
+	// 통신하는 값은 전역변수로 존재하면 안된다. 만약 새로운 사람이 들어왔을때 초기화된 값을 보여줘야 하는데 그럴수가 없기 때문.
+	// 기본적으로 스프링 빈에서 싱글톤으로 생성되기 때문에 전역변수로 사용하면 전혀 다른 결과가 나올수도 있다.
+	// 혼자쓸거면 상관없는데 2명이상이서 쓰게되면 값이 어떻게 될지 모른다.
 
-	@RequestMapping(value = "/securityajax", method = RequestMethod.GET)
-	public String connectAjax(/* Model model, */CardDeck carddeck, HttpServletRequest req) {
-		// 이제 이 SecurityAjaxSeotdaController 부분에선 웹 브라우저에서 데브툴즈로 값이 조작 가능 한 점을 파악하여 그것을 방지하기 위한
-		// 카드에 쿠키 세션 값을 입혀주어 보안? 까지 강화시키는 버전을 만들어 볼려고한다.
-		
-		// 먼저 쿠키는 보안성이 세션에 비해 안좋으므로 세션 객체를 생성한다. 세션은 서버에 저장되어 관리되기 때문.
-		HttpSession cardSession = req.getSession();
-		
-		// 아래 주석 두줄로 "이 컨트롤러(입장컨트롤러)" 에서 ajax와 통신하는 컨트롤러로 session값이 넘어가는 부분은 확인이 완료되었다.
-//		String ticket = "입장권";
-//		cardSession.setAttribute("player", ticket);
-		
+	@RequestMapping(value = "/firstajax", method = RequestMethod.GET)
+	public String connectAjax(Model model, CardDeck carddeck, Card card) {
+		// 여기 있는 메소드로 맵핑된 url로 jsp 최초진입이 시작된다, 그러므로 GET방식으로 선언해 주어야 한다.
+		// 최초진입은 url주소를 브라우저에 "직접 기입하여" 접속한다.
+
+		// 1번째 플레이어의 카드를 담을 리스트 생성
+//		List<Card> firstCardList = new ArrayList<>();
+		// 1번 플레이어의 카드만 받아 model로 보내주기 때문에 섞은 후 카드만 넣어주면 된다.
+
+		// 카드 덱 객체 생성.
+		// 섞음
 		carddeck.shuffle();
 
 		// 1번 플레이어의 1번째카드, 2번째카드 얻는 변수.
 		String firstHanded = carddeck.getCards().get(0).getCardNum();
 		String secondHanded = carddeck.getCards().get(2).getCardNum();
-		
-		// 값을 session에 추가
-		cardSession.setAttribute("firstCard", firstHanded);
-		cardSession.setAttribute("secondCard", secondHanded);
-		
-		// 값을 model에 추가. => model에 추가하면 데브툴즈로 조작이 가능하다 3,8광을 38광땡으로 바꾸기 가능.
-		//model.addAttribute("firstCard", firstHanded);
-		//model.addAttribute("secondCard", secondHanded);
+		// 승부 판별용 점수만 따로 계산
 
-		return "toyprj/securityajaxjsphouse";
+
+		// 어떤 카드를 받았는지를 넣어주고 카드 리스트에 추가.
+		// 1번 플레이어의 1번째 카드
+
+//		Map<String, Object> inputPageCardList = new HashMap<>();
+//		inputPageCardList.put("inputPageCardList", firstCardList);
+//
+//		model.addAttribute("inputPageCardList", inputPageCardList);
+		model.addAttribute("firstCard", firstHanded);
+		model.addAttribute("secondCard", secondHanded);
+
+		// System.out.println("1번 플레이어 " + inputPageCardList.toString());
+
+		// 일단 model값부터 보내봄. 전달 됨.
+//		model.addAttribute("num1", 1);
+//		model.addAttribute("num2", 2);
+		return "toyprj/ajaxjsphouse";
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/securitydobak", method = RequestMethod.POST)
-	public Map<String, Object> getDeck(@RequestParam Map<String, Object> param, CardDeck carddeck, HttpSession session, HttpServletRequest req) {
-		
-		//if(true) {
-		//	throw new IllegalArgumentException("에러입니다.");
-		//}
-		
+	@RequestMapping(value = "/ajaxjspdobak", method = RequestMethod.POST)
+	public Map<String, Object> getDeck(
+			@RequestParam Map<String, Object> param,
+			@RequestParam("first") String first,
+			@RequestParam("second") String second, CardDeck carddeck, Card card
+			) {
+		//CardDeck cardDeck = new CardDeck();
+		// 1번째 플레이어의 카드를 담을 리스트 생성
+//		List<Card> firstCardList = new ArrayList<>();
+		// 2번째 플레이어의 카드를 담을 리스트 생성
 		List<Card> secondCardList = new ArrayList<>();
-		
-		// 1번 플레이어는 진입부분에서 생성함.
+
+		// 1번 플레이어 카드 객체 생성
+//		Card card = new Card();
 		// 2번 플레이어 카드 객체 생성
 		Card card2 = new Card();
 		// 결과를 저장하고 출력할 문자열 생성
@@ -79,25 +91,21 @@ public class SecurityAjaxSeotdaController {
 
 		// 카드 덱 객체 생성.
 //		CardDeck cd = new CardDeck();
-
+		
 		carddeck.shuffle();
-
-		// -----------------------------------------------------------------------------
+		
+		//-----------------------------------------------------------------------------
 		// 1번 플레이어의 1번째카드, 2번째카드 얻는 변수.
-		// 문자열로 넘어 간뒤 한번 더 문자열로 받아가지고 더블쿼테이션이 겹친다... ""1"" 이런식으로 나와서
-		// numberformatException이 뜬다.
+		// 문자열로 넘어 간뒤 한번 더 문자열로 받아가지고 더블쿼테이션이 겹친다... ""1"" 이런식으로 나와서 numberformatException이 뜬다.
 		// 중복문자열 제거로 없애줘야한다.
-		// --------- jsp내부에서 JSON 데이터를 stringify로 변형하여 문자열에 문자열이 씌워져 더블 쿼테이션이 나온것이였다.
-		// 현재 jsp파일은 알맞게 수정 한 상태이다. 이제 numberformatException이 뜨지 않으므로 처음과 같이 계획한대로 가능하다!
-		
-		// 일단 넘어온 값이 맞나 테스트
-		System.out.println("firstCard : " + session.getAttribute("firstCard"));
-		System.out.println("secondCard : " + session.getAttribute("secondCard"));
-		// ㅇㅋ 확인
-		
-		String firstHanded = (String) session.getAttribute("firstCard");
-		String secondHanded = (String) session.getAttribute("secondCard");
-	
+		// 위 부분은 해결하였다. jsp의 ajax 코드 부분에서 JSON.stringify()로 안그래도 문자열인걸 한번 더 문자열변환을 해 주었던게 문제였다.
+		String firstHanded = first;
+		String secondHanded = second;
+
+		// 무조건 테스트
+		System.out.println("넘어오고 변환한 first 값 : " + firstHanded + "");
+		System.out.println("넘어오고 변환한 second 값 : " + secondHanded + "");
+		//-----------------------------------------------------------------------------
 		// 승부 판별용 점수만 따로 계산
 		int firstHandedNum;
 		int secondHandedNum;
@@ -166,7 +174,7 @@ public class SecurityAjaxSeotdaController {
 			secFirstHandedNum = secSecondHandedNum;
 			secSecondHandedNum = temp2;
 		}
-
+		
 		// [1] 광땡 계산하기
 		// 1번 플레이어 레벨검사
 		if (firstHandedNum == THIRD_LIGHT_NUM && secondHandedNum == EIGHTH_LIGHT_NUM) {
@@ -191,7 +199,7 @@ public class SecurityAjaxSeotdaController {
 			secondPlayerLevel = 99;
 		}
 		// [2] 땡계산
-		// 1번 플레이어 계산
+		// 1번 플레이어 계산 
 		if (firstHandedNum == 10 && secondHandedNum == 10) {
 			firstPlayerDeckLevel = "장땡";
 			firstPlayerLevel = 50;
@@ -285,31 +293,43 @@ public class SecurityAjaxSeotdaController {
 		// 바꾼 생각 -> 숫자가 작은걸 앞쪽에 몰아넣자. 어차피 결과점수는 똑같다. => 매우 잘한일, 코드 단축 및 생산성이 극대화됨.
 
 		// 어떤 카드를 받았는지를 넣어주고 카드 리스트에 추가.
-		// 딜러의 1번째 카드
+		// 1번 플레이어의 1번째 카드
+//		card.setCardNum(firstHanded);
+		// 2번 플레이어의 1번째 카드
 		card2.setCardNum(firstHandedSecondPlayer);
-		// 카드 추가
+		// 각각 카드 추가
+//		firstCardList.add(card);
 		secondCardList.add(card2);
 
 		// 두번째 카드
+//		card = new Card();
 		card2 = new Card();
+
+		// 마찬가지
+//		card.setCardNum(secondHanded);
 		card2.setCardNum(secondHandedSecondPlayer);
+//		firstCardList.add(card);
 		secondCardList.add(card2);
 
 		Map<String, Object> cardList = new HashMap<>();
+//		cardList.put("cardList", firstCardList);
 		cardList.put("cardList2", secondCardList);
 		cardList.put("result", result);
+		//cardList.put("connect", "success");
+		//cardList.put("connect2", "success2");
 
 		// ------------------------------------------------------------------------
 
 		// ajax에서 들어오는 값을 알기 위한 테스트코드
-//		System.out.println("파람값1 : " + param.get("first"));
-//		System.out.println("파람값2 : " + param.get("second"));
-//		System.out.println("@RequestParam(\"first\")의 값" + first);
-//		System.out.println("@RequestParam(\"second\")의 값" + second);
-//		System.out.println("ajax에서 넘어온 param의 키" + param.keySet());
-//		System.out.println("ajax에서 넘어온 param의 값" + param.values());
+		System.out.println("파람값1 : " + param.get("first"));
+		System.out.println("파람값2 : " + param.get("second"));
+		System.out.println("@RequestParam(\"first\")의 값" + first);
+		System.out.println("@RequestParam(\"second\")의 값" + second);
+		System.out.println("ajax에서 넘어온 param의 키" + param.keySet());
+		System.out.println("ajax에서 넘어온 param의 값" + param.values());
+
 
 		return cardList;
 	}
-
+	
 }
