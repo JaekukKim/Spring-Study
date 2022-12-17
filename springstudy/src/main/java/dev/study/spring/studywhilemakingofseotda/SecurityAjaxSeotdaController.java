@@ -35,6 +35,9 @@ public class SecurityAjaxSeotdaController {
 		String firstHanded = carddeck.getCards().get(0).getCardNum();
 		String secondHanded = carddeck.getCards().get(2).getCardNum();
 		
+		// 세션 아이디 확인
+		System.out.println("jsp입장 세션 아이디 : " + cardSession.getId());
+		
 		// 값을 session에 추가
 		cardSession.setAttribute("firstCard", firstHanded);
 		cardSession.setAttribute("secondCard", secondHanded);
@@ -52,10 +55,6 @@ public class SecurityAjaxSeotdaController {
 			CardDeck carddeck,
 			HttpSession session,
 			HttpServletRequest req) {
-		
-		//if(true) {
-		//	throw new IllegalArgumentException("에러입니다.");
-		//}
 		
 		List<Card> secondCardList = new ArrayList<>();
 		
@@ -93,13 +92,16 @@ public class SecurityAjaxSeotdaController {
 		// 현재 jsp파일은 알맞게 수정 한 상태이다. 이제 numberformatException이 뜨지 않으므로 처음과 같이 계획한대로 가능하다!
 		
 		// 일단 넘어온 값이 맞나 테스트
-		System.out.println("firstCard : " + session.getAttribute("firstCard"));
-		System.out.println("secondCard : " + session.getAttribute("secondCard"));
+//		System.out.println("firstCard : " + first);
+//		System.out.println("secondCard : " + second);
 		// ㅇㅋ 확인
 		
 		String firstHanded = (String) session.getAttribute("firstCard");
 		String secondHanded = (String) session.getAttribute("secondCard");
-	
+		
+		// 컨트롤러 부분 세션 아이디 확인
+		System.out.println("컨트롤러 세션 아이디 : " + session.getId());
+		
 		// 승부 판별용 점수만 따로 계산
 		int firstHandedNum;
 		int secondHandedNum;
@@ -267,15 +269,15 @@ public class SecurityAjaxSeotdaController {
 		// 레벨과 총합계점수로 최종판별 (레벨 : 땡판별 / 합계점수 : 끗판별)
 		// 1번 플레이어
 		if (firstPlayerLevel > secondPlayerLevel) {
-			result = "1번 플레이어가 " + firstPlayerDeckLevel + " 으로 이겼습니다!";
+			result = "플레이어가 " + firstPlayerDeckLevel + " 으로 이겼습니다!";
 		} else if (firstPlayerTotalScore % 10 > secondPlayerTotalScore % 10) {
-			result = "1번 플레이어가 " + firstPlayerTotalScore % 10 + " 끗으로 이겼습니다!";
+			result = "플레이어가 " + firstPlayerTotalScore % 10 + " 끗으로 이겼습니다!";
 		}
 		// 2번 플레이어
 		if (firstPlayerLevel < secondPlayerLevel) {
-			result = "2번 플레이어가 " + secondPlayerDeckLevel + " 으로 이겼습니다!";
+			result = "딜러가 " + secondPlayerDeckLevel + " 으로 이겼습니다!";
 		} else if (firstPlayerTotalScore % 10 < secondPlayerTotalScore % 10) {
-			result = "2번 플레이어가 " + secondPlayerTotalScore % 10 + " 끗으로 이겼습니다!";
+			result = "딜러가 " + secondPlayerTotalScore % 10 + " 끗으로 이겼습니다!";
 		}
 
 		// 승부 판별 종료.

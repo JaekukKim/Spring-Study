@@ -135,7 +135,7 @@ thead {
 
 			},
 			error : function(request, status, error) { // 결과 에러 콜백함수
-				console.log(error);
+				console.log('중복페이지발생!!');
 			},
 		});
 	}

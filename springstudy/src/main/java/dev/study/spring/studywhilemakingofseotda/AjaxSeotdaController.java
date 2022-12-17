@@ -23,10 +23,6 @@ public class AjaxSeotdaController {
 		// 여기 있는 메소드로 맵핑된 url로 jsp 최초진입이 시작된다, 그러므로 GET방식으로 선언해 주어야 한다.
 		// 최초진입은 url주소를 브라우저에 "직접 기입하여" 접속한다.
 
-		// 1번째 플레이어의 카드를 담을 리스트 생성
-//		List<Card> firstCardList = new ArrayList<>();
-		// 1번 플레이어의 카드만 받아 model로 보내주기 때문에 섞은 후 카드만 넣어주면 된다.
-
 		// 카드 덱 객체 생성.
 		// 섞음
 		carddeck.shuffle();
@@ -35,7 +31,6 @@ public class AjaxSeotdaController {
 		String firstHanded = carddeck.getCards().get(0).getCardNum();
 		String secondHanded = carddeck.getCards().get(2).getCardNum();
 		// 승부 판별용 점수만 따로 계산
-
 
 		// 어떤 카드를 받았는지를 넣어주고 카드 리스트에 추가.
 		// 1번 플레이어의 1번째 카드
@@ -57,19 +52,23 @@ public class AjaxSeotdaController {
 
 	@ResponseBody
 	@RequestMapping(value = "/ajaxjspdobak", method = RequestMethod.POST)
-	public Map<String, Object> getDeck(
-			@RequestParam Map<String, Object> param,
-			@RequestParam("first") String first,
-			@RequestParam("second") String second, CardDeck carddeck, Card card
-			) {
-		//CardDeck cardDeck = new CardDeck();
-		// 1번째 플레이어의 카드를 담을 리스트 생성
-//		List<Card> firstCardList = new ArrayList<>();
+	public Map<String, Object> getDeck(@RequestParam Map<String, Object> param,
+			@RequestParam("first") String first, /* ajax에서 넘어온 플레이어의 첫번째 카드 */
+			@RequestParam("second") String second, /* ajax에서 넘어온 플레이어의 두번째 카드 */
+			CardDeck carddeck /* 카드 덱 객체 */
+	) {
+		/*
+		 * 플레이어의 카드는
+		 * @RequestParam("first") String first
+		 * @RequestParam("second") String second
+		 * 에서 받아온다.
+		 */
+		// 게임 관리해줄 객체를 생성. (카드 변환, 승패출력 등)
+//		SeotdaGameManager gameManager = new SeotdaGameManager();
+		
 		// 2번째 플레이어의 카드를 담을 리스트 생성
 		List<Card> secondCardList = new ArrayList<>();
 
-		// 1번 플레이어 카드 객체 생성
-//		Card card = new Card();
 		// 2번 플레이어 카드 객체 생성
 		Card card2 = new Card();
 		// 결과를 저장하고 출력할 문자열 생성
@@ -79,33 +78,34 @@ public class AjaxSeotdaController {
 		String secondPlayerDeckLevel = "";
 		// 매직넘버 방지용 광패 변수, 광은 하나밖에 없는 패 이므로 final로 설정
 		final int FIRST_LIGHT_NUM = 11;
-		int THIRD_LIGHT_NUM = 13;
-		int EIGHTH_LIGHT_NUM = 18;
+		final int THIRD_LIGHT_NUM = 13;
+		final int EIGHTH_LIGHT_NUM = 18;
 
 		// 작은 패를 첫번째 카드로 바꿔주기 위한 임시변수
 		int temp1 = 0; // 1번 플레이어
 		int temp2 = 0; // 2번 플레이어.
+		
 		// 플레이어의 패 등급을 판별하기 위한 변수
 		int firstPlayerLevel = 0;
 		int secondPlayerLevel = 0;
 
-		// 카드 덱 객체 생성.
-//		CardDeck cd = new CardDeck();
-		
 		carddeck.shuffle();
-		
-		//-----------------------------------------------------------------------------
+
+		// -----------------------------------------------------------------------------
 		// 1번 플레이어의 1번째카드, 2번째카드 얻는 변수.
-		// 문자열로 넘어 간뒤 한번 더 문자열로 받아가지고 더블쿼테이션이 겹친다... ""1"" 이런식으로 나와서 numberformatException이 뜬다.
+		// 문자열로 넘어 간뒤 한번 더 문자열로 받아가지고 더블쿼테이션이 겹친다... ""1"" 이런식으로 나와서
+		// numberformatException이 뜬다.
 		// 중복문자열 제거로 없애줘야한다.
-		// 위 부분은 해결하였다. jsp의 ajax 코드 부분에서 JSON.stringify()로 안그래도 문자열인걸 한번 더 문자열변환을 해 주었던게 문제였다.
+
+		/*
+		 * 위 부분은 해결하였다. jsp의 ajax 코드 부분에서 JSON.stringify()로 안그래도 문자열인걸 한번 더 문자열변환을 해주었던게
+		 * 문제였다.
+		 */
+
 		String firstHanded = first;
 		String secondHanded = second;
-
-		// 무조건 테스트
-		System.out.println("넘어오고 변환한 first 값 : " + firstHanded + "");
-		System.out.println("넘어오고 변환한 second 값 : " + secondHanded + "");
-		//-----------------------------------------------------------------------------
+		
+		// -----------------------------------------------------------------------------
 		// 승부 판별용 점수만 따로 계산
 		int firstHandedNum;
 		int secondHandedNum;
@@ -135,6 +135,8 @@ public class AjaxSeotdaController {
 		}
 		// 1번 플레이어 총 합 점수
 		int firstPlayerTotalScore = firstHandedNum + secondHandedNum;
+		
+//		gameManager.translateCardValue(first, second);
 
 		// 2번 플레이어의 1번째 카드, 2번째 카드 얻는 변수.
 		String firstHandedSecondPlayer = carddeck.getCards().get(1).getCardNum();
@@ -174,7 +176,7 @@ public class AjaxSeotdaController {
 			secFirstHandedNum = secSecondHandedNum;
 			secSecondHandedNum = temp2;
 		}
-		
+
 		// [1] 광땡 계산하기
 		// 1번 플레이어 레벨검사
 		if (firstHandedNum == THIRD_LIGHT_NUM && secondHandedNum == EIGHTH_LIGHT_NUM) {
@@ -199,7 +201,7 @@ public class AjaxSeotdaController {
 			secondPlayerLevel = 99;
 		}
 		// [2] 땡계산
-		// 1번 플레이어 계산 
+		// 1번 플레이어 계산
 		if (firstHandedNum == 10 && secondHandedNum == 10) {
 			firstPlayerDeckLevel = "장땡";
 			firstPlayerLevel = 50;
@@ -315,8 +317,8 @@ public class AjaxSeotdaController {
 //		cardList.put("cardList", firstCardList);
 		cardList.put("cardList2", secondCardList);
 		cardList.put("result", result);
-		//cardList.put("connect", "success");
-		//cardList.put("connect2", "success2");
+		// cardList.put("connect", "success");
+		// cardList.put("connect2", "success2");
 
 		// ------------------------------------------------------------------------
 
@@ -328,8 +330,7 @@ public class AjaxSeotdaController {
 		System.out.println("ajax에서 넘어온 param의 키" + param.keySet());
 		System.out.println("ajax에서 넘어온 param의 값" + param.values());
 
-
 		return cardList;
 	}
-	
+
 }
