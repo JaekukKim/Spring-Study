@@ -7,7 +7,7 @@ import java.util.List;
 public class CardDeck {
 	private List<Card> cards;
 	private static final String[] DECK_NUMBER = {"광덱","일반덱"};
-	private static final int CARD_NUM = 10;
+	private static final int CARD_NUM = 20;
 
 	public CardDeck() {
 		cards = new ArrayList<>();
@@ -32,8 +32,10 @@ public class CardDeck {
 						light = "8광";
 						cardnum = 18;
 						break;
+					case 10:
+						cardnum = 10;
 						default:
-							light = Integer.toString(i);
+							light = Integer.toString(i%10);
 							break;
 					}
 				} else {

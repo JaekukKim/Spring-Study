@@ -1,5 +1,6 @@
 package dev.study.spring.studywhilemakingofseotda;
 
+// TODO Card -> number(just number), boolean(special card attribute)
 public class Card {
 	private String deckNum;
 	private String cardNum;
