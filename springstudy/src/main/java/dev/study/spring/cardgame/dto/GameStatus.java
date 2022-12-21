@@ -2,30 +2,32 @@ package dev.study.spring.cardgame.dto;
 
 import java.util.Stack;
 
+import dev.study.spring.studywhilemakingofseotda.Card;
+
 
 public class GameStatus {
-	private Stack<CardDTO> cards;
-	private CardDTO firstCard;
-	private CardDTO secondCard;
+	private Stack<Card> cards;
+	private Card firstCard;
+	private Card secondCard;
 	
 	public GameStatus() {
 	}
 	
-	public GameStatus(Stack<CardDTO> cards, CardDTO firstCard, CardDTO secondCard) {
+	public GameStatus(Stack<Card> cards, Card firstCard, Card secondCard) {
 		this.cards = cards;
 		this.firstCard = firstCard;
 		this.secondCard = secondCard;
 	}
 
-	public Stack<CardDTO> getCards() {
+	public Stack<Card> getCards() {
 		return cards;
 	}
 
-	public CardDTO getFirstCard() {
+	public Card getFirstCard() {
 		return firstCard;
 	}
 
-	public CardDTO getSecondCard() {
+	public Card getSecondCard() {
 		return secondCard;
 	}
 

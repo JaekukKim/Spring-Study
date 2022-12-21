@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,48 +17,51 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class SecurityAjaxSeotdaController {
-
+	
 	@RequestMapping(value = "/securityajax", method = RequestMethod.GET)
-	public String connectAjax(/* Model model, */CardDeck carddeck, HttpServletRequest req) {
-		// 이제 이 SecurityAjaxSeotdaController 부분에선 웹 브라우저에서 데브툴즈로 값이 조작 가능 한 점을 파악하여 그것을 방지하기 위한
+	public String connectAjax(CardDeck carddeck, HttpServletRequest req, Model model) {
+		// 이제 이 SecurityAjaxSeotdaController 부분에선 웹 브라우저에서 데브툴즈로 값이 조작 가능 한 점을 파악하여 그것을
+		// 방지하기 위한
 		// 카드에 쿠키 세션 값을 입혀주어 보안? 까지 강화시키는 버전을 만들어 볼려고한다.
-		
+
 		// 먼저 쿠키는 보안성이 세션에 비해 안좋으므로 세션 객체를 생성한다. 세션은 서버에 저장되어 관리되기 때문.
 		HttpSession cardSession = req.getSession();
-		
+
 		// 아래 주석 두줄로 "이 컨트롤러(입장컨트롤러)" 에서 ajax와 통신하는 컨트롤러로 session값이 넘어가는 부분은 확인이 완료되었다.
 //		String ticket = "입장권";
 //		cardSession.setAttribute("player", ticket);
-		
+
 		carddeck.shuffle();
 
 		// 1번 플레이어의 1번째카드, 2번째카드 얻는 변수.
 		String firstHanded = carddeck.getCards().get(0).getCardNum();
 		String secondHanded = carddeck.getCards().get(2).getCardNum();
 		
-		// 세션 아이디 확인
-		System.out.println("jsp입장 세션 아이디 : " + cardSession.getId());
+		// 페이지의 상태를 확인하는 변수 선언, 변수의 특정값을 이용해 페이지를 관리할 예정.
+		int pageCount = 1;
 		
 		// 값을 session에 추가
 		cardSession.setAttribute("firstCard", firstHanded);
 		cardSession.setAttribute("secondCard", secondHanded);
+		cardSession.setAttribute("pageCount", pageCount);
 		
+		// model에만 카운트
+		model.addAttribute("pageCount", pageCount);
+
 		// 값을 model에 추가. => model에 추가하면 데브툴즈로 조작이 가능하다 3,8광을 38광땡으로 바꾸기 가능.
-		//model.addAttribute("firstCard", firstHanded);
-		//model.addAttribute("secondCard", secondHanded);
+		// model.addAttribute("firstCard", firstHanded);
+		// model.addAttribute("secondCard", secondHanded);
 
 		return "toyprj/securityajaxjsphouse";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/securitydobak", method = RequestMethod.POST)
-	public Map<String, Object> getDeck(@RequestParam Map<String, Object> param,
-			CardDeck carddeck,
-			HttpSession session,
+	public Map<String, Object> getDeck(@RequestParam Map<String, Object> param, CardDeck carddeck, HttpSession session,
 			HttpServletRequest req) {
-		
+
 		List<Card> secondCardList = new ArrayList<>();
-		
+
 		// 1번 플레이어는 진입부분에서 생성함.
 		// 2번 플레이어 카드 객체 생성
 		Card card2 = new Card();
@@ -90,18 +94,26 @@ public class SecurityAjaxSeotdaController {
 		// 중복문자열 제거로 없애줘야한다.
 		// --------- jsp내부에서 JSON 데이터를 stringify로 변형하여 문자열에 문자열이 씌워져 더블 쿼테이션이 나온것이였다.
 		// 현재 jsp파일은 알맞게 수정 한 상태이다. 이제 numberformatException이 뜨지 않으므로 처음과 같이 계획한대로 가능하다!
-		
+
 		// 일단 넘어온 값이 맞나 테스트
 //		System.out.println("firstCard : " + first);
 //		System.out.println("secondCard : " + second);
 		// ㅇㅋ 확인
-		
+
+		// 진입 페이지에서 생성된 플레이어의 카드를 받아와 변수에 대입.
 		String firstHanded = (String) session.getAttribute("firstCard");
 		String secondHanded = (String) session.getAttribute("secondCard");
 		
+		// 페이지의 카운트 변수를 가져와 확인해봐야한다
+		int pageCount = (int) session.getAttribute("pageCount");
+		System.out.println("ajax에서 넘어온 페이지 카운트 변수 : " + pageCount);
+		System.out.println("ajax에서 넘어온 req.getAttr 페이지 카운트 변수 : " + req.getAttribute("pageCount"));
+		System.out.println("ajax에서 넘어온 req.getParam 페이지 카운트 변수 : " + req.getParameter("pageCount"));
+		// jsp 테스트 출력은 성공했으나 컨트롤러 안에서 결과가 다르다. 진입부에서 넘겨준 1을 그대로 받아옴;
+
 		// 컨트롤러 부분 세션 아이디 확인
-		System.out.println("컨트롤러 세션 아이디 : " + session.getId());
-		
+//		System.out.println("컨트롤러 세션 아이디 : " + session.getId());
+
 		// 승부 판별용 점수만 따로 계산
 		int firstHandedNum;
 		int secondHandedNum;
@@ -279,7 +291,8 @@ public class SecurityAjaxSeotdaController {
 		} else if (firstPlayerTotalScore % 10 < secondPlayerTotalScore % 10) {
 			result = "딜러가 " + secondPlayerTotalScore % 10 + " 끗으로 이겼습니다!";
 		}
-
+		
+		
 		// 승부 판별 종료.
 		// [1] 레벨 변수 하나 만들어서 관리하길 너무잘함.
 		// 단순 숫자만 놓고 보는 블랙잭과는 달리 섯다는 족보란게 존재하여 단순 숫자가 낮아도 상대방을 이길 수 있는 패가 매우 많음.
@@ -288,6 +301,7 @@ public class SecurityAjaxSeotdaController {
 		// [2] 1번카드 2번카드는 프로그래밍일 뿐 현실에선 순서가 중요하지 않다는 점에 착안하여 생각을 바꿔봄.
 		// 바꾼 생각 -> 숫자가 작은걸 앞쪽에 몰아넣자. 어차피 결과점수는 똑같다. => 매우 잘한일, 코드 단축 및 생산성이 극대화됨.
 
+		
 		// 어떤 카드를 받았는지를 넣어주고 카드 리스트에 추가.
 		// 딜러의 1번째 카드
 		card2.setCardNum(firstHandedSecondPlayer);
@@ -302,16 +316,6 @@ public class SecurityAjaxSeotdaController {
 		Map<String, Object> cardList = new HashMap<>();
 		cardList.put("cardList2", secondCardList);
 		cardList.put("result", result);
-
-		// ------------------------------------------------------------------------
-
-		// ajax에서 들어오는 값을 알기 위한 테스트코드
-//		System.out.println("파람값1 : " + param.get("first"));
-//		System.out.println("파람값2 : " + param.get("second"));
-//		System.out.println("@RequestParam(\"first\")의 값" + first);
-//		System.out.println("@RequestParam(\"second\")의 값" + second);
-//		System.out.println("ajax에서 넘어온 param의 키" + param.keySet());
-//		System.out.println("ajax에서 넘어온 param의 값" + param.values());
 
 		return cardList;
 	}

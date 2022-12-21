@@ -10,19 +10,21 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 
-import dev.study.spring.cardgame.dto.CardDTO;
+
 import dev.study.spring.cardgame.dto.CardDeck;
 import dev.study.spring.cardgame.dto.GameResult;
 import dev.study.spring.cardgame.dto.GameStatus;
 import dev.study.spring.cardgame.enums.HandResult;
 import dev.study.spring.cardgame.util.CalculateScoreUtil;
+import dev.study.spring.studywhilemakingofseotda.Card;
 
 @Service
 public class CardGameService {
 
 	private static final String GAME_STATUS = "gameStatus";
 	// 게임 시스템 관리 객체를 만들어주면 혹시나 다른 사람이 접속했을 때를 대비해 게임의 진행 상황을 저장하여야 한다.
-	// 저장을 하는 키 값으로 gameStatus를 입력해도 되지만 게임의 진행 상황이라는 "키"는 변하지 않음, 즉 정적이기 때문에 상수로 선언해준다.
+	// 저장을 하는 키 값으로 gameStatus를 입력해도 되지만 게임의 진행 상황이라는 "키"는 변하지 않음, 즉 정적이기 때문에 상수로
+	// 선언해준다.
 
 	public String gameInit(HttpServletRequest req) {
 		// 이제 이 SecurityAjaxSeotdaController 부분에선 웹 브라우저에서 데브툴즈로 값이 조작 가능 한 점을 파악하여 그것을
@@ -36,30 +38,31 @@ public class CardGameService {
 		cardDeck.shuffle();
 
 		// 1번 플레이어의 1번째카드, 2번째카드 얻는 변수.
-		Stack<CardDTO> cards = cardDeck.getCards();
-		CardDTO firstHanded = cards.pop();
-		CardDTO secondHanded = cards.pop();
+		Stack<Card> cards = cardDeck.getCards();
+		Card firstHanded = cards.pop();
+		Card secondHanded = cards.pop();
 		// 세션 아이디 확인
 		System.out.println("jsp입장 세션 아이디 : " + cardSession.getId());
 
 		// 게임 상태를 담는 객체 (전체상태)
-		// TODO firstHanded, secondHanded => convert to Card Object 
-		// TODO GameStatus field, getDeck method logic 
+		// TODO firstHanded, secondHanded => convert to Card Object
+		// TODO GameStatus field, getDeck method logic
 		GameStatus gameStatus = new GameStatus(cards, firstHanded, secondHanded);
 
 		// 값을 session에 추가
 		cardSession.setAttribute(GAME_STATUS, gameStatus);
+		// 그 전의 코드는 session에 플레이어의 카드를 각각 firstCard, secondCard로 저장했었다.
 
 		return "toyprj/securityajaxjsphouse";
 	}
 
 	public GameResult getDeck(HttpSession session, HttpServletRequest req) {
 
-		List<CardDTO> secondCardList = new ArrayList<>();
+		List<Card> secondCardList = new ArrayList<>();
 
 		// 1번 플레이어는 진입부분에서 생성함.
 		// 2번 플레이어 카드 객체 생성
-		CardDTO card = new CardDTO();
+		Card card = new Card();
 
 		// 매직넘버 방지용 광패 변수, 광은 하나밖에 없는 패 이므로 final로 설정
 		final int FIRST_LIGHT_NUM = CalculateScoreUtil.FIRST_LIGHT_NUM;
@@ -89,8 +92,8 @@ public class CardGameService {
 		// --------- jsp내부에서 JSON 데이터를 stringify로 변형하여 문자열에 문자열이 씌워져 더블 쿼테이션이 나온것이였다.
 		// 현재 jsp파일은 알맞게 수정 한 상태이다. 이제 numberformatException이 뜨지 않으므로 처음과 같이 계획한대로 가능하다!
 
-		CardDTO firstHanded = gameStatus.getFirstCard();
-		CardDTO secondHanded = gameStatus.getSecondCard();
+		Card firstHanded = gameStatus.getFirstCard();
+		Card secondHanded = gameStatus.getSecondCard();
 
 		// 컨트롤러 부분 세션 아이디 확인
 		System.out.println("컨트롤러 세션 아이디 : " + session.getId());
@@ -109,7 +112,7 @@ public class CardGameService {
 		} else if (firstHanded.equals("8광")) {
 			firstHandedNum = EIGHTH_LIGHT_NUM;
 		} else {
-			firstHandedNum = firstHanded.getNumber();
+			firstHandedNum = firstHanded.getNum();
 		}
 
 		if (secondHanded.equals("1광")) {
@@ -119,18 +122,18 @@ public class CardGameService {
 		} else if (secondHanded.equals("8광")) {
 			secondHandedNum = EIGHTH_LIGHT_NUM;
 		} else {
-			secondHandedNum = secondHanded.getNumber();
+			secondHandedNum = secondHanded.getNum();
 		}
 		// 1번 플레이어 총 합 점수
 		int firstPlayerTotalScore = firstHandedNum + secondHandedNum;
 
 		// 2번 플레이어의 1번째 카드, 2번째 카드 얻는 변수.
-		Stack<CardDTO> cards = gameStatus.getCards();
-		CardDTO firstDealerCard = cards.pop();
-		CardDTO secondDealerCard = cards.pop();
+		Stack<Card> cards = gameStatus.getCards();
+		Card firstDealerCard = cards.pop();
+		Card secondDealerCard = cards.pop();
 
-		int firstHandedSecondPlayer = firstDealerCard.getNumber();
-		int secondHandedSecondPlayer = secondDealerCard.getNumber();
+		int firstHandedSecondPlayer = firstDealerCard.getNum();
+		int secondHandedSecondPlayer = secondDealerCard.getNum();
 		// 이미 플레이어는 패를 2장을 가져간 상태 이 상태에서 pop()를 해주면 가져간 패를 제외
 		// 2번 플레이어 총 합 점수
 		int secondPlayerTotalScore = firstHandedSecondPlayer + secondHandedSecondPlayer;
@@ -152,6 +155,7 @@ public class CardGameService {
 		// 작은 패를 앞쪽으로 넣어주면 조건이 매우 편해진다.
 
 		// 작은 패 먼저 앞으로 옮기기.
+		// 임시변수 temp로 바꿔줄 필요 없이 카드 두장중에 작은값은 첫번째 카드, 큰값은 두번째 카드로 Math클래스의 메소드를 사용하면 된다.
 		// 플레이어
 		int playerFirstHandNum = Math.min(firstHandedNum, secondHandedNum);
 		int playerSecondHandNum = Math.max(firstHandedNum, secondHandedNum);
@@ -166,8 +170,9 @@ public class CardGameService {
 		// 딜러의 광땡과 땡을 검사해주는걸 한줄로 (enum (class명 : CalculateScoreUtil) 사용)
 		HandResult dealerHandResult = CalculateScoreUtil.getHandResult(dealerFirstHandNum, dealerSecondHandNum);
 		// [1] 가져온 데이터를 변수에 담는 습관을 들이자.
-		
-		String announceResult = CalculateScoreUtil.getAnnounceMessage(firstPlayerTotalScore, secondPlayerTotalScore, playerHandResult, dealerHandResult);
+
+		String announceResult = CalculateScoreUtil.getAnnounceMessage(firstPlayerTotalScore, secondPlayerTotalScore,
+				playerHandResult, dealerHandResult);
 		// 값이 자주 바뀌거나 역동적인 메소드, 변수 등에는 static을 선언해주면 안된다.
 		// 단어 뜻 그대로 (static : 정적이다) 역할에 맞게 사용해주어야 한다.
 

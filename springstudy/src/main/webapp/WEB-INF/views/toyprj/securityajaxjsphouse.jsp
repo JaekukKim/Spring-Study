@@ -46,6 +46,7 @@ thead {
 		<button id="open" onclick="openCard()">승부내기</button>
 		<div id="result">결과는 ?</div>
 	</div>
+	<div id="turn">게임 회차 : ${pageCount }</div>
 
 </body>
 <script type="text/javascript">
@@ -60,9 +61,12 @@ thead {
 	let cardData1 = '${firstCard}';
 	let cardData2 = '${secondCard}';
 	
-	console.log(cardData1);
-	console.log(cardData2);
-	// 객체화 테스트 출력 ok
+	// 컨트롤러에서 넘어온 pageCount(int타입)의 값을 여기서도 받아 카운팅 해주어야함.
+	let pageCount = '${pageCount}';
+	// 첫 접속 => pageCount 증가의 개념이니 1증가
+	
+	
+	console.log('1차 pageCount 증가 값 : ' + pageCount);
 	
 	function openCard() {
 		// 딜러의 카드를 담아서 넘겨버릴 배열변수 선언.
@@ -73,34 +77,8 @@ thead {
 			// type (키) : 값;
 			type : 'POST',
 			url : "/securitydobak",
-			
-			// 자바 파일에서 session객체를 생성하여 "서버에 직접적으로 저장" 해 주었기 때문에 데이터와 데이터 타입은 없어도
-			// 값을 가져오기가 가능하다. 왜냐? 서버에 직접적으로 저장이 되어있기 때문에 바로 꺼내와 쓰면 되기 때문.
-			 /* JSON.stringify(cardData1)써서 문자열이 더블 쿼테이션으로 넘어감. 현재 저 데이터만 해도 문자열임.*/
-			/* data : {
-				// 여기서 데이터를 넘겨야함.
-				'first' : cardData1,
-				'second' : cardData2,
-			},
-			 datatype : 'JSON', */
-			
 			success : function(data) { // <= success 부분의 obj 저 부분이 컨트롤러(서버)의 return값이 들어가는 부분이다.
 			
-				// 아래 코드도 굳이 필요하지 않은 부분이다.
-				 //if (data.connect == "success") {
-					 // 아랫부분은 굳이 필요가 없었던 for문이였음. 플레이어의 카드는 첫 출력 후 변하지 않음. => 주석처리.
-					 
-					/* for (var i = 0; i < data.cardList.length; i++) {
-						// 객체의 길이를 구하는 방법은 따로있다.
-						// Object.keys(객체의 변수명).length이다.
-
-						list.push((i + 1) + "번째 패 : " + data.cardList[i].cardNum
-								+ "<br/>");
-						console.log(data.cardList[i].cardNum);
-						// 배열에 값을 넣어줄때는 배열명.push(넣을 값); 으로 선언한다.
-					}  */
-					
-					// 여기 아래있는 for문만 필요하다.
 					for (var i = 0; i < data.cardList2.length; i++) {
 						/* 위 조건문의 객체의 길이는 객체 전체의 길이다. 나는 카드를 4장을 넣었고 그러므로 객체의 길이는 총 4가 되어버린다.
 						cardlist의 길이를 따로 뽑을순 없을까? 하면서 데브툴즈로 만지작 거리다 obj.cardList.length의 방식으로 선언이
@@ -109,33 +87,19 @@ thead {
 								+ data.cardList2[i].cardNum + "<br/>");
 						console.log(data.cardList2[i].cardNum);
 					}
-
-				//}
-				
-				// 엄청난 console.log의 흔적이다. console.log를 생활화 하자. 꼭 
-				// console.log(list);
-				// console.log(list2);
-				// console.log(obj);
-				
-				// console.log(Object.keys(obj).length);
-				/* firstList.push(list);
-				secondList.push(list2); */
-				
-				/* console.log(list); */
-				/* console.log(list2); */
-				
-				/* $("#first").html(list); */
-				
+				// 결과 데이터 (딜러의 패)를 화면에 출력하고 승부내는 버튼을 가린다.
 				$("#second").html(list2);
 				$("#result").html(data.result);
 				document.getElementById("open").style.display="none";
-
-				/*  var firstResult = document.getElementById("first");
-				firstResult.innerHTML = list; */
-
+				
+				// 컨트롤러에서 넘어온 페이지카운트의 값을 1 증가
+				pageCount++;
+				$("#turn").html(pageCount);
+				// 테스트출력을 반드시 해본다. 예상값은 2, 2가 안나온다면 뭔가뭔가있는거임.
+				console.log('2차 pageCount 증가 값 : ' + pageCount);
 			},
 			error : function(request, status, error) { // 결과 에러 콜백함수
-				console.log('중복페이지발생!!');
+				alert('데이터 접근 불가');
 			},
 		});
 	}
