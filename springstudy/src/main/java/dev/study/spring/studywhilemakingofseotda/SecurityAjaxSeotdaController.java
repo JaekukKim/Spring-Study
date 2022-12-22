@@ -37,31 +37,46 @@ public class SecurityAjaxSeotdaController {
 		String firstHanded = carddeck.getCards().get(0).getCardNum();
 		String secondHanded = carddeck.getCards().get(2).getCardNum();
 		
-		// 페이지의 상태를 확인하는 변수 선언, 변수의 특정값을 이용해 페이지를 관리할 예정.
-		int pageCount = 1;
-		
 		// 값을 session에 추가
 		cardSession.setAttribute("firstCard", firstHanded);
 		cardSession.setAttribute("secondCard", secondHanded);
-		cardSession.setAttribute("pageCount", pageCount);
 		
-		// model에만 카운트
+		// ** 페이지 진입부가 정답이였다... 내가 했던 모든 방식들을 조합할 생각을 못했다.
+		// 세션값은 map형태로 관리되어 새로운 페이지가 뜨면 카드의 value가 덮어씌워져버린다.
+		// 그럼 두번째 페이지를 띄웠을 때 아예 그 전 페이지를 만료시켜버리면 어떨까??
+		// 먼저 페이지의 상태를 확인하는 변수 선언, 변수의 특정값을 이용해 페이지를 관리할 예정이다.
+		int pageCount = 1;
+		
+		// 세션에 저장되어있는 pageCount를 불러와 null검사를 실시한다.
+		if(cardSession.getAttribute("pageCount") != null) {
+			// 초기값 1, null이 아님.
+			pageCount = (int)cardSession.getAttribute("pageCount");
+			pageCount++;
+			System.out.println("jsp 진입부분 pageCount : " + pageCount);
+		}
+		// model에만 추가하여 jsp에서 관리할 수 있게 한다.
 		model.addAttribute("pageCount", pageCount);
-
-		// 값을 model에 추가. => model에 추가하면 데브툴즈로 조작이 가능하다 3,8광을 38광땡으로 바꾸기 가능.
-		// model.addAttribute("firstCard", firstHanded);
-		// model.addAttribute("secondCard", secondHanded);
+		
+		cardSession.setAttribute("pageCount", pageCount);
 
 		return "toyprj/securityajaxjsphouse";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/securitydobak", method = RequestMethod.POST)
-	public Map<String, Object> getDeck(@RequestParam Map<String, Object> param, CardDeck carddeck, HttpSession session,
+	public Map<String, Object> getDeck(@RequestParam("pageCount") int pageC, @RequestParam Map<String, Object> param, CardDeck carddeck, HttpSession session,
 			HttpServletRequest req) {
 
 		List<Card> secondCardList = new ArrayList<>();
-
+		
+		// @RequestParam("pageCount") int pageC jsp에서 넘어온 값을 pageC에 저장한다.
+		if((int)session.getAttribute("pageCount") != pageC) {
+			System.out.println("에러가 났을시 pageCount(pageC)의 값(jsp진입부분의 값과 동일해야함) : " + pageC);
+			throw new IllegalStateException("만료된 게임입니다.");
+		}
+		System.out.println("세션에 저장된 pageCount값(jsp에서 넘겨준 pageCount값) : " + (int)session.getAttribute("pageCount"));
+		System.out.println("ajax에서 넘어온 pageCount(pageC) 값 : " + pageC);
+		
 		// 1번 플레이어는 진입부분에서 생성함.
 		// 2번 플레이어 카드 객체 생성
 		Card card2 = new Card();
@@ -106,9 +121,9 @@ public class SecurityAjaxSeotdaController {
 		
 		// 페이지의 카운트 변수를 가져와 확인해봐야한다
 		int pageCount = (int) session.getAttribute("pageCount");
-		System.out.println("ajax에서 넘어온 페이지 카운트 변수 : " + pageCount);
-		System.out.println("ajax에서 넘어온 req.getAttr 페이지 카운트 변수 : " + req.getAttribute("pageCount"));
-		System.out.println("ajax에서 넘어온 req.getParam 페이지 카운트 변수 : " + req.getParameter("pageCount"));
+//		System.out.println("ajax에서 넘어온 페이지 카운트 변수 : " + pageCount);
+//		System.out.println("ajax에서 넘어온 req.getAttr 페이지 카운트 변수 : " + req.getAttribute("pageCount"));
+//		System.out.println("ajax에서 넘어온 req.getParam 페이지 카운트 변수 : " + req.getParameter("pageCount"));
 		// jsp 테스트 출력은 성공했으나 컨트롤러 안에서 결과가 다르다. 진입부에서 넘겨준 1을 그대로 받아옴;
 
 		// 컨트롤러 부분 세션 아이디 확인
