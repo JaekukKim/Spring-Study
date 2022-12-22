@@ -77,6 +77,9 @@ thead {
 			// type (키) : 값;
 			type : 'POST',
 			url : "/securitydobak",
+			data : {pageCount : pageCount},
+			// ajax 통신이 진행될 때 서버로 넘어가는 데이터에 pageCount를 추가해주어 서버에서 받아서 검증이 가능하게 만들어야 한다.
+			
 			success : function(data) { // <= success 부분의 obj 저 부분이 컨트롤러(서버)의 return값이 들어가는 부분이다.
 			
 					for (var i = 0; i < data.cardList2.length; i++) {
@@ -92,9 +95,7 @@ thead {
 				$("#result").html(data.result);
 				document.getElementById("open").style.display="none";
 				
-				// 컨트롤러에서 넘어온 페이지카운트의 값을 1 증가
-				pageCount++;
-				$("#turn").html(pageCount);
+				$("#turn").html('게임회차 : ' + pageCount);
 				// 테스트출력을 반드시 해본다. 예상값은 2, 2가 안나온다면 뭔가뭔가있는거임.
 				console.log('2차 pageCount 증가 값 : ' + pageCount);
 			},
