@@ -57,7 +57,7 @@ public class HomeController {
 			ResultSet rs = stmt.executeQuery(query);
 			
 			while (rs.next()) {
-				model.addAttribute("serverTime", rs.getString("now"));
+				model.addAttribute("serverTime", rs.getString("NOW"));
 			}
 			
 			System.out.println("db접속 데이터소스로 성공함 : " + conn);
