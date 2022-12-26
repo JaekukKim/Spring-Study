@@ -4,22 +4,25 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
 	
-	
-	
-	
-	
-	
-	
 	<context:annotation-config/>
 	<!-- Exam exam = new ExamA1(); -->
-	<bean class="dev.study.spring.newlec.entity.ExamA1"/>
-	<!-- 중복을 방지하기 위해 반드시 class=에는 경로를 명시해주어야 한다. -->
-
+	<bean id="exam1" class="dev.study.spring.newlec.entity.ExamA1" 
+			p:korScore="10" p:mathScore="10" p:comScore="10">
+	</bean>
+			<!-- p:로 이루어진 태그안의 값은 아래 코드 3줄과 같다. 이럴경우 namespace에서 p를 활성화 시켜주어야한다. -->
+		<!-- <property name="korScore" value="10"></property>
+		<property name="mathScore" value="10"></property>
+		<property name="comScore" value="10"></property> -->
+	<bean id="exam2" class="dev.study.spring.newlec.entity.ExamA1" 
+			p:korScore="20" p:mathScore="20" p:comScore="20">
+	</bean>
+			
 	<!-- ExamConsole console = new InlineExamConsole(exam); -->
 	<bean id="console" class="dev.study.spring.newlec.ui.InlineExamConsole">
 	<!-- console.print(); -->
