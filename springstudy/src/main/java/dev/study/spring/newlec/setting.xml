@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+	
+	
+	
+	
+	
+	
+	<context:annotation-config/>
+	<!-- Exam exam = new ExamA1(); -->
+	<bean class="dev.study.spring.newlec.entity.ExamA1"/>
+	<!-- 중복을 방지하기 위해 반드시 class=에는 경로를 명시해주어야 한다. -->
+
+	<!-- ExamConsole console = new InlineExamConsole(exam); -->
+	<bean id="console" class="dev.study.spring.newlec.ui.InlineExamConsole">
+	<!-- console.print(); -->
+		<!-- <property name="exam" ref="exam"></property> -->
+		<!-- 프로퍼티명은 setter이든 뭐든 생략하고 소문자로 표기하는게 규칙이다.
+			 나중에 알겠지만 자료형을 표기하는 과정이다. 자료형이지만 소문자로!!-->
+			<!-- 프로퍼티의 name이 값 그 자체인지, 아니면 참조를 하는지를 잘 생각하고 명시를 해주어야한다. -->
+	</bean>
+</beans>
