@@ -2,22 +2,23 @@ package dev.study.spring.newlec.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
 
 import dev.study.spring.newlec.entity.Exam;
 
-@Primary
 public class InlineExamConsole implements ExamConsole {
+	
 	
 	private Exam exam;
 	
-	public InlineExamConsole() {
-		System.out.println("@Autowired : 생성자호출");
-	}
+//	public InlineExamConsole() {
+//		System.out.println("@Autowired : 기본생성자호출");
+//	}
 	
 	// Exam을 받아내는 생성자 만들어야함.
-	public InlineExamConsole(Exam exam) {
-		this.exam = exam;
+	@Autowired
+	public InlineExamConsole(@Qualifier("exam1") Exam exam1) {
+		System.out.println("@Autowired : 오버로딩 생성자호출");
+		this.exam = exam1;
 	}
 	
 	@Override
@@ -27,8 +28,6 @@ public class InlineExamConsole implements ExamConsole {
 
 	}
 
-	@Autowired
-	@Qualifier("exam2")
 	@Override
 	public void setExam(Exam exam) {
 		System.out.println("@Autowired : setter호출");

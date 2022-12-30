@@ -11,7 +11,6 @@ public class GridExamConsole implements ExamConsole {
 	}
 	
 	public GridExamConsole(Exam exam) {
-		super();
 		this.exam = exam;
 	}
 
